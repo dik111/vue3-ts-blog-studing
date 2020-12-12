@@ -1,21 +1,34 @@
 <template>
   <nav class="is-primary panel">
    <p class="panel-tabs">
-     <a data-test="period" v-for="(period,index) in periods" :key="index">{{period}}</a>
+     <a
+         @click="setPeriod(period)"
+         :class="[period === selectedPeriod ? 'is-active':'']"
+         data-test="period" v-for="(period,index) in periods" :key="index">{{period}}</a>
    </p>
   </nav>
 </template>
 
 <script lang="ts">
-import {defineComponent} from 'vue'
+import {defineComponent,ref} from 'vue'
 import {Period} from "@/types";
 
 export default defineComponent({
   name: "Timeline",
   setup() {
     const periods:Period[] = ["今天", "本周", "本月"]
+    const selectedPeriod = ref<Period>("今天")
 
-    return {periods}
+    // tab切换
+    const setPeriod = (period:Period) =>{
+      selectedPeriod.value = period;
+    }
+
+    return {
+      periods,
+      selectedPeriod,
+      setPeriod
+    }
   }
 })
 </script>
