@@ -6,12 +6,7 @@
          :class="[period === selectedPeriod ? 'is-active':'']"
          data-test="period" v-for="(period,index) in periods" :key="index">{{period}}</a>
    </p>
-    <a data-test='post' v-for="(post) in posts " :key="post.id" class="panel-block">
-      <div>
-        <a>{{post.title}}</a>
-        <div>{{post.created.format("yyyy-MM-dd")}}</div>
-      </div>
-    </a>
+    <timeline-post v-for="(post) in posts " :key="post.id" :post="post"></timeline-post>
   </nav>
 </template>
 
@@ -20,9 +15,12 @@ import {defineComponent,ref,computed} from 'vue'
 import {Period,Post} from "@/types";
 import {todayPost,thisWeek,thisMonth} from "@/mock";
 import moment from "moment";
-
+import TimelinePost from "@/components/TimelinePost.vue";
 export default defineComponent({
   name: "Timeline",
+  components:{
+    TimelinePost
+  },
   setup() {
     const periods:Period[] = ["今天", "本周", "本月"]
     const selectedPeriod = ref<Period>("今天")
