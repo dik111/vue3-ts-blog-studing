@@ -22,4 +22,17 @@ describe('Timeline.vue', () => {
 
     const $thisMonth =  wrapper.findAll("[data-test='period']")[2]
   })
+  it('测试测试数据加载的功能', async () => {
+    const wrapper = mount(Timeline, {})
+    expect(wrapper.findAll("[data-test='post']")).toHaveLength(1)
+
+    const $thisWeek =  wrapper.findAll("[data-test='period']")[1]
+    await $thisWeek.trigger("click")
+    expect(wrapper.findAll("[data-test='post']")).toHaveLength(2)
+
+    const $thisMonth =  wrapper.findAll("[data-test='period']")[2]
+    await $thisMonth.trigger("click")
+    expect(wrapper.findAll("[data-test='post']")).toHaveLength(3)
+
+  })
 })
