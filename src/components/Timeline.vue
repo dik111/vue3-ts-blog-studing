@@ -16,6 +16,8 @@ import {Period,Post} from "@/types";
 import {todayPost,thisWeek,thisMonth} from "@/mock";
 import moment from "moment";
 import TimelinePost from "@/components/TimelinePost.vue";
+import {useStore} from "@/store";
+
 export default defineComponent({
   name: "Timeline",
   components:{
@@ -24,6 +26,12 @@ export default defineComponent({
   setup() {
     const periods:Period[] = ["今天", "本周", "本月"]
     const selectedPeriod = ref<Period>("今天")
+    const store = useStore()
+    // console.log(store.getState())
+    const allPosts = store.getState().posts.ids.reduce<Post[]>((acc,id) =>{
+      const post = store.getState().posts.all[id]
+      return acc.concat(post)
+    },[])
 
     // tab切换
     const setPeriod = (period:Period) =>{
@@ -32,7 +40,8 @@ export default defineComponent({
 
     // 展示数据
     // const posts:Post[] = [todayPost,thisWeek,thisMonth]
-    const posts = computed(() =>[todayPost,thisWeek,thisMonth].filter(post =>{
+    const posts = computed(() =>
+        allPosts.filter((post) =>{
       if (selectedPeriod.value === "今天" && post.created.isAfter(moment().subtract(1,"day"))){
         return true
       }else{
