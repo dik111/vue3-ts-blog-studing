@@ -6,12 +6,20 @@
          :class="[period === selectedPeriod ? 'is-active':'']"
          data-test="period" v-for="(period,index) in periods" :key="index">{{period}}</a>
    </p>
+    <a v-for="(post) in posts " :key="post.id" class="panel-block">
+      <div>
+        <a>{{post.title}}</a>
+        <div>{{post.created.format("yyyy-MM-dd")}}</div>
+      </div>
+    </a>
   </nav>
 </template>
 
 <script lang="ts">
-import {defineComponent,ref} from 'vue'
-import {Period} from "@/types";
+import {defineComponent,ref,computed} from 'vue'
+import {Period,Post} from "@/types";
+import {todayPost,thisWeek,thisMonth} from "@/mock";
+import moment from "moment";
 
 export default defineComponent({
   name: "Timeline",
@@ -24,10 +32,31 @@ export default defineComponent({
       selectedPeriod.value = period;
     }
 
+    // 展示数据
+    // const posts:Post[] = [todayPost,thisWeek,thisMonth]
+    const posts = computed(() =>[todayPost,thisWeek,thisMonth].filter(post =>{
+      if (selectedPeriod.value === "今天" && post.created.isAfter(moment().subtract(1,"day"))){
+        return true
+      }else{
+        false
+      }
+      if (selectedPeriod.value === "本周" && post.created.isAfter(moment().subtract(7,"days"))){
+        return true
+      }else{
+        false
+      }
+      if (selectedPeriod.value === "本月" && post.created.isAfter(moment().subtract(1,"month"))){
+        return true
+      }else{
+        false
+      }
+    }))
+
     return {
       periods,
       selectedPeriod,
-      setPeriod
+      setPeriod,
+      posts
     }
   }
 })
